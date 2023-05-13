@@ -22,5 +22,14 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-
+  fonts:
+    - family: Lato
+      fonts:
+        - asset: fonts/Lato-Regular.ttf
+        - asset: fonts/Lato-Light.ttf
+          weight: 300
+        - asset: fonts/Lato-Bold.ttf
+          weight: 700
+        - asset: fonts/Lato-Black.ttf
+          weight: 900
   uses-material-design: true
