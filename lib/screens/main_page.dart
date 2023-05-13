@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:health_hack/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,24 +26,89 @@ class MainPage extends StatelessWidget {
                 'Good ${BaseFunctions.getTimeBasedGreetings()} 🔥',
                 style: const TextStyle(
                   fontFamily: 'Lato',
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
               const Text(
                 'Sardorbek Abdulabbozov',
                 style: TextStyle(
                   fontFamily: 'Lato',
-                  fontSize: 18,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ],
           ),
         ),
-        body:const Column(
-          children: [],
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                enabled: false,
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: SvgPicture.asset(
+                      'assets/ic_search.svg',
+                    ),
+                  ),
+                  hintText: 'Coming soon...',
+                  hintStyle: const TextStyle(
+                    fontFamily: 'Lato',
+                    fontSize: 16,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 8),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(32)),
+            child: BottomNavigationBar(
+              backgroundColor: Constants.asset,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Constants.primary,
+              currentIndex: controller.navBarIndex,
+              showUnselectedLabels: false,
+              onTap: controller.changeNavBar,
+              items: [
+                navBarItem(label: 'Home', icon: 'assets/ic_home.svg'),
+                navBarItem(label: 'Explore', icon: 'assets/ic_rocket.svg'),
+                navBarItem(label: 'Workouts', icon: 'assets/ic_statistic.svg'),
+                navBarItem(label: 'Profile', icon: 'assets/ic_profile.svg'),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+BottomNavigationBarItem navBarItem(
+    {required String label, required String icon}) {
+  return BottomNavigationBarItem(
+    icon: SvgPicture.asset(
+      icon,
+      color: Colors.white,
+    ),
+    label: label,
+    activeIcon: SvgPicture.asset(
+      icon,
+      color: Constants.primary,
+    ),
+  );
 }
