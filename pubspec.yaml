@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   mysql_client: ^0.0.27
-
+  flutter_svg: ^2.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -22,6 +22,8 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
+  assets:
+    - assets/
   fonts:
     - family: Lato
       fonts:
@@ -32,4 +34,5 @@ flutter:
           weight: 700
         - asset: fonts/Lato-Black.ttf
           weight: 900
+
   uses-material-design: true
