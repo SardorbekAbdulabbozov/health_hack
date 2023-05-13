@@ -86,8 +86,8 @@ class MainPage extends StatelessWidget {
               onTap: controller.changeNavBar,
               items: [
                 navBarItem(label: 'Home', icon: 'assets/ic_home.svg'),
-                navBarItem(label: 'Activities', icon: 'assets/ic_rocket.svg'),
-                navBarItem(label: 'Records', icon: 'assets/ic_statistic.svg'),
+                navBarItem(label: 'Explore', icon: 'assets/ic_rocket.svg'),
+                navBarItem(label: 'Workouts', icon: 'assets/ic_statistic.svg'),
                 navBarItem(label: 'Profile', icon: 'assets/ic_profile.svg'),
               ],
             ),
