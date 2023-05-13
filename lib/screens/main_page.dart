@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:health_hack/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +73,42 @@ class MainPage extends StatelessWidget {
             ),
           ],
         ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 8),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(32)),
+            child: BottomNavigationBar(
+              backgroundColor: Constants.asset,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Constants.primary,
+              currentIndex: controller.navBarIndex,
+              showUnselectedLabels: false,
+              onTap: controller.changeNavBar,
+              items: [
+                navBarItem(label: 'Home', icon: 'assets/ic_home.svg'),
+                navBarItem(label: 'Activities', icon: 'assets/ic_rocket.svg'),
+                navBarItem(label: 'Records', icon: 'assets/ic_statistic.svg'),
+                navBarItem(label: 'Profile', icon: 'assets/ic_profile.svg'),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
+}
+
+BottomNavigationBarItem navBarItem(
+    {required String label, required String icon}) {
+  return BottomNavigationBarItem(
+    icon: SvgPicture.asset(
+      icon,
+      color: Colors.white,
+    ),
+    label: label,
+    activeIcon: SvgPicture.asset(
+      icon,
+      color: Constants.primary,
+    ),
+  );
 }

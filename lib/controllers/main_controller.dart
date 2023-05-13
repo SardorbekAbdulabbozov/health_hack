@@ -6,6 +6,7 @@ import 'package:mysql_client/mysql_client.dart';
 class MainController extends GetxController {
   MySQLConnection? connectionPool;
   String data = '';
+  int navBarIndex = 0;
 
   @override
   void onReady() async {
@@ -27,6 +28,11 @@ class MainController extends GetxController {
     IResultSet? result =
         await connectionPool?.execute('SELECT * FROM $tableName');
     data = '${result?.rows.first.colAt(1)}';
+    update();
+  }
+
+  void changeNavBar(int index){
+    navBarIndex=index;
     update();
   }
 }
