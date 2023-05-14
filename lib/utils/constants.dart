@@ -5,6 +5,7 @@ class Constants{
   static const mainR = "/";
   static const homeR = "/home";
   static const authR = "/auth";
+  static const profileR="/profile";
 
   // MySQL constants
   static const username = 'root';
