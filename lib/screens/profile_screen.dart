@@ -11,8 +11,11 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _height;
   String? _weight;
+  String? _name;
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
 
   void editor(String a, String? h, TextEditingController c) {
     showModalBottomSheet<dynamic>(
@@ -37,8 +40,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                     return null;
                   },
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(label: Text('$a in cm')),
+                  keyboardType: a=='full name'? TextInputType.text : TextInputType.number,
+                  decoration: InputDecoration(label: a=='full name'? const Text('Full Name'): Text('$a in cm')),
                   onFieldSubmitted: (v) {
                     Navigator.pop(context);
                   },
@@ -109,13 +112,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const Text(
-                              'Sardorbek Abdulabbozov',
-                              style: TextStyle(
+
+                            Text( nameController.text==''?
+                              'Sardorbek Abdulabbozov': nameController.text,
+                              style: const TextStyle(
                                   fontSize: 23, fontWeight: FontWeight.w500),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: (){editor('full name', _name, nameController );},
                               icon: const Icon(
                                 Icons.edit,
                                 color: Constants.asset,
