@@ -197,28 +197,6 @@ class _AuthScreenState extends State<AuthScreen>
                                   ),
                                   password(),
                                   TextFormField(
-                                    controller: _pass,
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter password';
-                                      }
-                                      if (val.length < 6) {
-                                        return 'Password should be at least 8 characters long';
-                                      }
-                                      if (!regex.hasMatch(val)) {
-                                        return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
-                                      }
-                                      return null;
-                                    },
-                                    obscuringCharacter: '*',
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        label: Text('Password')),
-                                    onSaved: (val) {
-                                      _userPassword = val;
-                                    },
-                                  ),
-                                  TextFormField(
                                     validator: (val) {
                                       if (val!.isEmpty) {
                                         return 'Please enter password';
@@ -244,34 +222,6 @@ class _AuthScreenState extends State<AuthScreen>
                                     ),
                                     onSaved: (val) {
                                       _userPassword = val;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter your height';
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                        label: Text('Height in cm')),
-                                    onSaved: (val) {
-                                      _height=val;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter your weight';
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                        label: Text('Weight in kg')),
-                                    onSaved: (val) {
-                                      _weight=val;
                                     },
                                   ),
                                   Row(
