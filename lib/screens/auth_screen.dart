@@ -91,7 +91,7 @@ class _AuthScreenState extends State<AuthScreen>
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-              "assets/background.jpg",
+              "assets/ic_background.jpg",
             ),
             fit: BoxFit.cover,
           ),
