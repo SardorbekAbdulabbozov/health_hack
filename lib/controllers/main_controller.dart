@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
+import 'package:health_hack/models/equipment_model.dart';
 import 'package:health_hack/models/user_model.dart';
 import 'package:health_hack/models/workout_model.dart';
 import 'package:health_hack/storage/local_source.dart';
@@ -14,6 +15,8 @@ class MainController extends GetxController {
   UserModel? userData;
   WorkoutModel? userWorkout;
   List<WorkoutModel> otherWorkouts = [];
+  List<String> exercises = [];
+  List<EquipmentModel> equipments = [];
   int navBarIndex = 0;
   int dailyWaterAmount = 0;
   int dailySleepAmount = 0;
@@ -153,6 +156,40 @@ class MainController extends GetxController {
         );
       },
     );
+  }
+
+  Future<void> getExercises(String workoutId) async {
+    exercises = [];
+    IResultSet? result = await connectionPool?.execute(
+        "SELECT title FROM exercise JOIN workout_exercise USING(exercise_id) WHERE workout_exercise.id = '$workoutId'");
+    if ((result?.rows ?? []).isNotEmpty) {
+      (result?.rows ?? []).forEach(
+        (exer) {
+          if ((exer.colAt(0) ?? '').isNotEmpty) {
+            exercises.add(exer.colAt(0) ?? '');
+          }
+        },
+      );
+    }
+    await getEquipments(workoutId);
+    update();
+  }
+
+  Future<void> getEquipments(String workoutId) async {
+    equipments = [];
+    IResultSet? result = await connectionPool?.execute(
+        "SELECT equipment.name, equipment.description FROM equipment JOIN workout_workout_equipment USING(equipment_id) WHERE workout_workout_equipment.id = '$workoutId'");
+    if ((result?.rows ?? []).isNotEmpty) {
+      (result?.rows ?? []).forEach(
+        (exer) {
+          if ((exer.colAt(0) ?? '').isNotEmpty) {
+            equipments.add(EquipmentModel(
+                name: exer.colAt(0) ?? '', description: exer.colAt(1) ?? ''));
+          }
+        },
+      );
+    }
+    update();
   }
 
   Future<void> login(String email, String password) async {

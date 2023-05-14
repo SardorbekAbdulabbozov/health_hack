@@ -1,11 +1,12 @@
 import 'package:health_hack/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:health_hack/screens/explore_page/explore_page.dart';
 import 'package:health_hack/screens/main_page/widgets/custom_search_bar.dart';
 import 'package:health_hack/screens/main_page/widgets/main_app_bar.dart';
 import 'package:health_hack/screens/main_page/widgets/my_water_consumption.dart';
 import 'package:health_hack/screens/main_page/widgets/my_workouts.dart';
-import 'package:health_hack/screens/profile_page.dart';
+import 'package:health_hack/screens/profile_page/profile_page.dart';
 import 'package:health_hack/utils/constants.dart';
 
 import 'widgets/my_sleep_duration.dart';
@@ -37,7 +38,7 @@ class MainPage extends StatelessWidget {
               MySleepDuration(amount: controller.dailySleepAmount),
             ],
           ),
-          Container(),
+          const ExplorePage(),
           Container(),
           const ProfilePage(),
         ];
