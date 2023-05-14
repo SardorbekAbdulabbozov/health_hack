@@ -140,13 +140,17 @@ class MyWorkouts extends GetView<MainController> {
                                                   ),
                                                 ),
                                                 header: Padding(
-                                                  padding: const EdgeInsets.only(top:12),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 12),
                                                   child: Text(
-                                                    controller.equipments[i].name,
+                                                    controller
+                                                        .equipments[i].name,
                                                     style: const TextStyle(
                                                       fontFamily: 'Lato',
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.w700,
+                                                      fontWeight:
+                                                          FontWeight.w700,
                                                       color: Constants.assets,
                                                     ),
                                                   ),
