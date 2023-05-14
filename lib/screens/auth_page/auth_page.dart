@@ -7,8 +7,7 @@ import 'package:get/get.dart';
 import 'package:health_hack/controllers/main_controller.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:intl/intl.dart';
-
-import '../../models/user_model.dart';
+import 'package:health_hack/models/user_model.dart';
 
 enum AuthMode { signup, login }
 
@@ -133,7 +132,7 @@ class _AuthPageState extends State<AuthPage>
     });
   }
 
-  void _selectDate() {
+  void _selectDate() async {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -145,6 +144,7 @@ class _AuthPageState extends State<AuthPage>
       }
       setState(() {
         selectedDate = pickedDate;
+        _birthday = pickedDate;
       });
     });
   }
@@ -162,6 +162,8 @@ class _AuthPageState extends State<AuthPage>
             firstName: _userFName,
             lastName: _userLName,
             email: _userEmail ?? '',
+            dateOfBirth: _birthday,
+            age: DateTime.now().difference(_birthday ?? DateTime.now()).inDays~/365,
           ),
           _userPassword ?? '',
         );
@@ -324,40 +326,43 @@ class _AuthPageState extends State<AuthPage>
                                   ),
                                 ],
                               ),
-                              Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'User',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontWeight: FontWeight.w600,
-                                        color: Constants.assets,
+                              Visibility(
+                                visible: false,
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'User',
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w600,
+                                          color: Constants.assets,
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(7.0),
-                                      child: Switch(
-                                        value: isTrainer,
-                                        activeColor: Constants.primary,
-                                        activeTrackColor: Constants.assets,
-                                        onChanged: (bool b) {
-                                          setState(() {
-                                            isTrainer = b;
-                                          });
-                                        },
+                                      Padding(
+                                        padding: const EdgeInsets.all(7.0),
+                                        child: Switch(
+                                          value: isTrainer,
+                                          activeColor: Constants.primary,
+                                          activeTrackColor: Constants.assets,
+                                          onChanged: (bool b) {
+                                            setState(() {
+                                              isTrainer = b;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    const Text(
-                                      'Trainer',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        fontWeight: FontWeight.w600,
-                                        color: Constants.assets,
+                                      const Text(
+                                        'Trainer',
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w600,
+                                          color: Constants.assets,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

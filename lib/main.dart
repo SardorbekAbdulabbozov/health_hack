@@ -2,7 +2,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:health_hack/bindings/main_binding.dart';
 import 'package:health_hack/screens/auth_page/auth_page.dart';
 import 'package:health_hack/screens/main_page/main_page.dart';
-import 'package:health_hack/screens/profile_screen.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,10 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         Constants.mainR: (c) => const MainPage(),
-        Constants.profileR: (c)=> const ProfileScreen(),
         Constants.authR: (c) => const AuthPage(),
-        // Constants.authR:(c)=>const AuthPage(),
-        // Constants.homeR:(c)=>const HomePage(),
       },
     );
   }

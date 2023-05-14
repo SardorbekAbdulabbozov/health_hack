@@ -33,9 +33,9 @@ class MainController extends GetxController {
     await connectionPool
         ?.connect()
         .then((value) => debugPrint('├─────────────────────────── connected'));
-    if(localSource.hasProfile()){
+    if (localSource.hasProfile()) {
       Get.offAllNamed(Constants.mainR);
-      var ssn =localSource.getSSN();
+      var ssn = localSource.getSSN();
       await getUserData(ssn).then((v) async {
         await getUserWorkout(ssn);
         await getDailyWaterConsumption(ssn);
@@ -102,7 +102,6 @@ class MainController extends GetxController {
 
   Future<void> getDailyWaterConsumption(String ssn) async {
     var date = DateTime.now();
-    debugPrint("SELECT * FROM water WHERE id='${date.day}.${date.month}$ssn' AND ssn = '$ssn'\n\n\n");
     IResultSet? result = await connectionPool?.execute(
         "SELECT * FROM water WHERE id='${date.day}.${date.month}$ssn' AND ssn = '$ssn'");
     if ((result?.rows ?? []).isEmpty) {
@@ -180,5 +179,28 @@ class MainController extends GetxController {
         );
       }
     }
+  }
+
+  Future<void> updateProfile({
+    required double weight,
+    required double height,
+    required DateTime birthdate,
+  }) async {
+    await connectionPool
+        ?.execute(
+            "UPDATE user SET height='$height', weight='$weight', date_of_birth='$birthdate' WHERE ssn='${localSource.getSSN()}'")
+        .then((value) async {
+      await getUserData(localSource.getSSN()).then((v) async {
+        await getUserWorkout(localSource.getSSN());
+        await getDailyWaterConsumption(localSource.getSSN());
+        await getSleepDuration(localSource.getSSN());
+      });
+    });
+  }
+
+  Future<void> logout() async {
+    await localSource
+        .logout()
+        .then((value) => Get.offAllNamed(Constants.authR));
   }
 }
