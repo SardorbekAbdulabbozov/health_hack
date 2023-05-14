@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Center(
                     child: Column(
                       children: [
-                        const CircleAvatar(
+                         const CircleAvatar(
                           radius: 50,
                           backgroundImage:
                               AssetImage("assets/unknown_person.png"),
@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onPressed: (){editor('full name', _name, nameController );},
                               icon: const Icon(
                                 Icons.edit,
-                                color: Constants.asset,
+                                color: Constants.assets,
                               ),
                             ),
                           ],
