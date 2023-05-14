@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:date_field/date_field.dart';
 
 enum AuthMode { signup, login }
 
@@ -15,6 +17,10 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  String? _height;
+  DateTime? _birthday;
+  String? _weight;
+  String? _userId;
   String? _userName = '';
   String? _userEmail = '';
   String? _userPassword = '';
@@ -30,6 +36,50 @@ class _AuthScreenState extends State<AuthScreen>
   final TextEditingController _pass = TextEditingController();
 
   late AnimationController _controller;
+  Widget password(){
+    return TextFormField(
+      controller: _pass,
+      validator: (val) {
+        if (val!.isEmpty) {
+          return 'Please enter password';
+        }
+        if (val.length < 6) {
+          return 'Password should be at least 8 characters long';
+        }
+        if (!regex.hasMatch(val)) {
+          return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
+        }
+        return null;
+      },
+      obscuringCharacter: '*',
+      obscureText: true,
+      decoration: const InputDecoration(
+          label: Text('Password')),
+      onSaved: (val) {
+        _userPassword = val;
+      },
+    );
+  }
+  Widget emailAddress(){
+    return TextFormField(
+      validator: (val) {
+        if (val!.isEmpty) {
+          return 'Please enter email address';
+        }
+        if (!(val.endsWith('.com')) ||
+            !(val.contains('@'))) {
+          return 'Enter a valid email address';
+        }
+        return null;
+      },
+      keyboardType: TextInputType.emailAddress,
+      decoration: const InputDecoration(
+          label: Text('Email Address')),
+      onSaved: (val) {
+        _userEmail = val;
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -65,7 +115,7 @@ class _AuthScreenState extends State<AuthScreen>
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2022),
+      firstDate: DateTime(1920),
       lastDate: DateTime.now(),
     ).then((pickedDate) {
       if (pickedDate == null) {
@@ -79,6 +129,15 @@ class _AuthScreenState extends State<AuthScreen>
 
   void imagePicker(File image) {
     imagePicked = image;
+  }
+
+  void _trySubmit() {
+    final isValid = _formKey.currentState?.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid == true) {
+      _formKey.currentState?.save();
+
+    }
   }
 
   @override
@@ -114,25 +173,7 @@ class _AuthScreenState extends State<AuthScreen>
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        if (authMode == AuthMode.signup)
-                          TextFormField(
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return 'Please enter email address';
-                              }
-                              if (!(val.endsWith('.com')) ||
-                                  !(val.contains('@'))) {
-                                return 'Enter a valid email address';
-                              }
-                              return null;
-                            },
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                                label: Text('Email Address')),
-                            onSaved: (val) {
-                              _userEmail = val;
-                            },
-                          ),
+                        emailAddress(),
                         authMode == AuthMode.signup
                             ? Column(
                                 children: [
@@ -153,28 +194,7 @@ class _AuthScreenState extends State<AuthScreen>
                                       _userName = val;
                                     },
                                   ),
-                                  TextFormField(
-                                    controller: _pass,
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter password';
-                                      }
-                                      if (val.length < 6) {
-                                        return 'Password should be at least 8 characters long';
-                                      }
-                                      if (!regex.hasMatch(val)) {
-                                        return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
-                                      }
-                                      return null;
-                                    },
-                                    obscuringCharacter: '*',
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        label: Text('Password')),
-                                    onSaved: (val) {
-                                      _userPassword = val;
-                                    },
-                                  ),
+                                  password(),
                                   TextFormField(
                                     validator: (val) {
                                       if (val!.isEmpty) {
@@ -196,13 +216,39 @@ class _AuthScreenState extends State<AuthScreen>
                                     },
                                     obscuringCharacter: '*',
                                     obscureText: true,
-                                    decoration: InputDecoration(
-                                      label: Text(authMode == AuthMode.signup
-                                          ? 'Confirm Password'
-                                          : 'Password'),
+                                    decoration: const InputDecoration(
+                                      label: Text('Confirm Password'),
                                     ),
                                     onSaved: (val) {
                                       _userPassword = val;
+                                    },
+                                  ),
+                                  TextFormField(
+                                    validator: (val) {
+                                      if (val!.isEmpty) {
+                                        return 'Please enter your height';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        label: Text('Height in cm')),
+                                    onSaved: (val) {
+                                      _height=val;
+                                    },
+                                  ),
+                                  TextFormField(
+                                    validator: (val) {
+                                      if (val!.isEmpty) {
+                                        return 'Please enter your weight';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        label: Text('Weight in kg')),
+                                    onSaved: (val) {
+                                      _weight=val;
                                     },
                                   ),
                                   Row(
@@ -211,7 +257,7 @@ class _AuthScreenState extends State<AuthScreen>
                                         child: Text(
                                           selectedDate == null
                                               ? 'No Date chosen'
-                                              : 'Date of Birth: ${DateFormat.yMMMMd().format(selectedDate!)}',
+                                              : 'Date of Birth: ${DateFormat.yMd().format(selectedDate!)}',
                                         ),
                                       ),
                                       TextButton(
@@ -250,52 +296,14 @@ class _AuthScreenState extends State<AuthScreen>
                               )
                             : Column(
                                 children: [
-                                  TextFormField(
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter username';
-                                      }
-                                      if (val.length < 6) {
-                                        return 'At least 6 characters';
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.name,
-                                    decoration: const InputDecoration(
-                                        label: Text('Username')),
-                                    onSaved: (val) {
-                                      _userName = val;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    controller: _pass,
-                                    validator: (val) {
-                                      if (val!.isEmpty) {
-                                        return 'Please enter password';
-                                      }
-                                      if (val.length < 6) {
-                                        return 'Password should be at least 8 characters long';
-                                      }
-                                      if (!regex.hasMatch(val)) {
-                                        return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
-                                      }
-                                      return null;
-                                    },
-                                    obscuringCharacter: '*',
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        label: Text('Password')),
-                                    onSaved: (val) {
-                                      _userPassword = val;
-                                    },
-                                  ),
+                                  password(),
                                 ],
                               ),
                         const SizedBox(
                           height: 12,
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: _trySubmit,
                           child: Text(authMode == AuthMode.signup
                               ? 'Sign Up'
                               : 'Log in'),
