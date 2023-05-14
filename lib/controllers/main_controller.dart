@@ -2,6 +2,7 @@
 
 import 'package:health_hack/models/user_model.dart';
 import 'package:health_hack/models/workout_model.dart';
+import 'package:health_hack/storage/local_source.dart';
 import 'package:health_hack/utils/base_functions.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class MainController extends GetxController {
   int navBarIndex = 0;
   int dailyWaterAmount = 0;
   int dailySleepAmount = 0;
+  LocalSource localSource = LocalSource();
 
   @override
   void onReady() async {
@@ -31,11 +33,15 @@ class MainController extends GetxController {
     await connectionPool
         ?.connect()
         .then((value) => debugPrint('├─────────────────────────── connected'));
-    await getUserData('abdulabbozov').then((v) async {
-      await getUserWorkout('abdulabbozov');
-      await getDailyWaterConsumption('abdulabbozov');
-      await getSleepDuration('abdulabbozov');
-    });
+    if(localSource.hasProfile()){
+      Get.offAllNamed(Constants.mainR);
+      var ssn =localSource.getSSN();
+      await getUserData(ssn).then((v) async {
+        await getUserWorkout(ssn);
+        await getDailyWaterConsumption(ssn);
+        await getSleepDuration(ssn);
+      });
+    }
   }
 
   Future<void> getUserData(String ssn) async {
@@ -58,24 +64,26 @@ class MainController extends GetxController {
   Future<void> getUserWorkout(String ssn) async {
     IResultSet? result = await connectionPool?.execute(
         "SELECT workout.title, workout.id FROM workout JOIN user USING(id) WHERE user.ssn = '$ssn'");
-    userWorkout = WorkoutModel(
-      id: result?.rows.first.colAt(1) ?? '',
-      name: result?.rows.first.colAt(0) ?? '',
-      coverImage:
-          BaseFunctions.getWorkoutCoverImage(result?.rows.first.colAt(1) ?? ''),
-    );
+
     if ((result?.rows ?? []).isEmpty) {
       IResultSet? result =
           await connectionPool?.execute("SELECT * FROM workout");
       (result?.rows ?? []).forEach((row) {
         otherWorkouts.add(
           WorkoutModel(
-            id: row.colAt(1) ?? '',
-            name: row.colAt(0) ?? '',
-            coverImage: BaseFunctions.getWorkoutCoverImage(row.colAt(1) ?? ''),
+            id: row.colAt(0) ?? '',
+            name: row.colAt(1) ?? '',
+            coverImage: BaseFunctions.getWorkoutCoverImage(row.colAt(0) ?? ''),
           ),
         );
       });
+    } else {
+      userWorkout = WorkoutModel(
+        id: result?.rows.first.colAt(1) ?? '',
+        name: result?.rows.first.colAt(0) ?? '',
+        coverImage: BaseFunctions.getWorkoutCoverImage(
+            result?.rows.first.colAt(1) ?? ''),
+      );
     }
     update();
   }
@@ -83,7 +91,7 @@ class MainController extends GetxController {
   Future<void> getSleepDuration(String ssn) async {
     var date = DateTime.now();
     IResultSet? result = await connectionPool?.execute(
-        "SELECT * FROM sleep WHERE id='${date.day}.${date.month}.${date.year}' AND ssn = '$ssn'");
+        "SELECT * FROM sleep WHERE id='${date.day}.${date.month}$ssn' AND ssn = '$ssn'");
     if ((result?.rows ?? []).isEmpty) {
       dailySleepAmount = 0;
     } else {
@@ -94,8 +102,9 @@ class MainController extends GetxController {
 
   Future<void> getDailyWaterConsumption(String ssn) async {
     var date = DateTime.now();
+    debugPrint("SELECT * FROM water WHERE id='${date.day}.${date.month}$ssn' AND ssn = '$ssn'\n\n\n");
     IResultSet? result = await connectionPool?.execute(
-        "SELECT * FROM water WHERE id='${date.day}.${date.month}.${date.year}' AND ssn = '$ssn'");
+        "SELECT * FROM water WHERE id='${date.day}.${date.month}$ssn' AND ssn = '$ssn'");
     if ((result?.rows ?? []).isEmpty) {
       dailyWaterAmount = 0;
     } else {
@@ -107,10 +116,10 @@ class MainController extends GetxController {
   Future<void> updateWaterAmount(int amount) async {
     var date = DateTime.now();
     await connectionPool?.execute(amount == 0
-        ? "DELETE FROM water WHERE id='${date.day}.${date.month}.${date.year}' AND ssn = 'abdulabbozov'"
+        ? "DELETE FROM water WHERE id='${date.day}.${date.month}${localSource.getSSN()}' AND ssn = '${localSource.getSSN()}'"
         : amount == 1 && dailyWaterAmount == 0
-            ? "INSERT INTO water(id, amount, ssn) VALUES ('${date.day}.${date.month}.${date.year}','$amount','abdulabbozov')"
-            : "UPDATE water SET amount='$amount' WHERE ssn = 'abdulabbozov'");
+            ? "INSERT INTO water(id, amount, ssn) VALUES ('${date.day}.${date.month}${localSource.getSSN()}','$amount','${localSource.getSSN()}')"
+            : "UPDATE water SET amount='$amount' WHERE ssn = '${localSource.getSSN()}'");
     dailyWaterAmount = amount;
     update();
   }
@@ -120,13 +129,56 @@ class MainController extends GetxController {
     update();
   }
 
-  List<WorkoutModel> personalizedWorkouts() {
-    return [
-      WorkoutModel(id: '1', name: 'Workout for ABS', coverImage: 'abs'),
-      WorkoutModel(id: '2', name: 'Workout for Arms', coverImage: 'arms'),
-      WorkoutModel(id: '3', name: 'Workout for Legs', coverImage: 'legs'),
-      WorkoutModel(id: '4', name: 'Workout for Back', coverImage: 'back'),
-      WorkoutModel(id: '5', name: 'Yoga', coverImage: 'yoga'),
-    ];
+  Future<void> signUp(UserModel user, String password) async {
+    await connectionPool
+        ?.execute(
+            "INSERT INTO person (`ssn`, `name_fname`, `name_lname`, `email`, `password`) VALUES ('${user.ssn}','${user.firstName}','${user.lastName}','${user.email}','$password')")
+        .then(
+      (value) async {
+        await connectionPool
+            ?.execute(
+                "INSERT INTO user (`height`, `weight`, `date_of_birth`, `ssn`, `age`) VALUES ('${user.height}','${user.weight}','${user.dateOfBirth}','${user.ssn}','${user.age}')")
+            .then(
+          (value) async {
+            await getUserData(user.ssn).then((v) async {
+              await getUserWorkout(user.ssn);
+              await getDailyWaterConsumption(user.ssn);
+              await getSleepDuration(user.ssn);
+            });
+            await localSource.setProfile(userData?.ssn ?? '').then(
+              (value) {
+                Get.offAllNamed(Constants.mainR);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> login(String email, String password) async {
+    IResultSet? result = await connectionPool?.execute(
+        "SELECT * FROM person WHERE email = '$email' AND password = '$password'");
+    if ((result?.rows ?? []).isNotEmpty) {
+      IResultSet? result2 = await connectionPool?.execute(
+          "SELECT * FROM user JOIN person USING(ssn) WHERE user.ssn='${result?.rows.first.colAt(0) ?? ''}'");
+      if ((result2?.rows ?? []).isNotEmpty) {
+        getUserData(result?.rows.first.colAt(0) ?? '').then(
+          (value) async {
+            await getUserData(result?.rows.first.colAt(0) ?? '')
+                .then((v) async {
+              await getUserWorkout(result?.rows.first.colAt(0) ?? '');
+              await getDailyWaterConsumption(result?.rows.first.colAt(0) ?? '');
+              await getSleepDuration(result?.rows.first.colAt(0) ?? '');
+            });
+            await localSource.setProfile(userData?.ssn ?? '').then(
+              (value) {
+                Get.offAllNamed(Constants.mainR);
+              },
+            );
+          },
+        );
+      }
+    }
   }
 }

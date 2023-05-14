@@ -13,7 +13,7 @@ class Constants{
   static const databaseName = 'health_hack_real';
 
   // Colors
-  static const asset = Color(0xFF192126);
+  static const assets = Color(0xFF192126);
   static const primary = Color(0xFFBBF246);
   static const background = Color(0xFFF7F6FB);
   static const secondary1 = Color(0xFF8B8F92);
@@ -24,6 +24,8 @@ class Constants{
   static const secondary6 = Color(0xFFFCC46F);
   static const secondary7 = Color(0xFF95CCE3);
 
+  // Local Source Keys
+  static const profile = 'profile';
 
 
 }

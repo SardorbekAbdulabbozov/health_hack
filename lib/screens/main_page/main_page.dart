@@ -51,7 +51,7 @@ class MainPage extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(32)),
             child: BottomNavigationBar(
-              backgroundColor: Constants.asset,
+              backgroundColor: Constants.assets,
               type: BottomNavigationBarType.fixed,
               selectedItemColor: Constants.primary,
               currentIndex: controller.navBarIndex,

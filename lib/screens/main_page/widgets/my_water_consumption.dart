@@ -35,7 +35,7 @@ class MyWaterConsumption extends StatelessWidget {
             margin: const EdgeInsets.all(16),
             child: SvgPicture.asset(
               'assets/ic_water.svg',
-              color: Constants.asset,
+              color: Constants.assets,
               width: 48,
               height: 48,
             ),
