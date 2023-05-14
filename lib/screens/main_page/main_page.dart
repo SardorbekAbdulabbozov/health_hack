@@ -26,13 +26,23 @@ class MainPage extends StatelessWidget {
                 : 'Dear user',
           ),
         ),
-        body: const Column(
+        body: Column(
           children: [
-            CustomSearchBar(),
-            MyWorkouts(),
-            MyWaterConsumption(),
-            SizedBox(height: 16),
-            MySleepDuration(),
+            const CustomSearchBar(),
+            MyWorkouts(
+              id: controller.userWorkout?.id ?? '',
+              name: controller.userWorkout?.name ?? '',
+              coverImage: controller.userWorkout?.coverImage ?? '',
+              otherWorkouts: controller.otherWorkouts,
+            ),
+            MyWaterConsumption(
+              amount: controller.dailyWaterAmount,
+              onChanged: (i) async {
+                await controller.updateWaterAmount(i);
+              },
+            ),
+            const SizedBox(height: 16),
+            MySleepDuration(amount: controller.dailySleepAmount),
           ],
         ),
         bottomNavigationBar: Padding(

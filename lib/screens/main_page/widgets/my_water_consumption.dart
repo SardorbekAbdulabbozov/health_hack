@@ -6,7 +6,13 @@ import 'package:get/get.dart';
 import 'package:health_hack/utils/constants.dart';
 
 class MyWaterConsumption extends StatelessWidget {
-  const MyWaterConsumption({Key? key}) : super(key: key);
+  const MyWaterConsumption({
+    Key? key,
+    required this.amount,
+    required this.onChanged,
+  }) : super(key: key);
+  final int amount;
+  final void Function(int) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,7 @@ class MyWaterConsumption extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'Water Consumption',
+                  'Daily Water Consumption',
                   style: TextStyle(
                     fontFamily: 'Lato',
                     fontSize: 18,
@@ -53,7 +59,9 @@ class MyWaterConsumption extends StatelessWidget {
                   child: Row(
                     children: [
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: amount - 1 < 0
+                            ? null
+                            : () => onChanged.call(amount - 1),
                         style: ButtonStyle(
                           shape:
                               MaterialStateProperty.all(const CircleBorder()),
@@ -61,9 +69,9 @@ class MyWaterConsumption extends StatelessWidget {
                         child: const Icon(Icons.remove_rounded),
                       ),
                       const Spacer(),
-                      const Text(
-                        '2 glass(es)',
-                        style: TextStyle(
+                      Text(
+                        '$amount glass(es)',
+                        style: const TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -71,7 +79,7 @@ class MyWaterConsumption extends StatelessWidget {
                       ),
                       const Spacer(),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () => onChanged.call(amount + 1),
                         style: ButtonStyle(
                           shape:
                               MaterialStateProperty.all(const CircleBorder()),

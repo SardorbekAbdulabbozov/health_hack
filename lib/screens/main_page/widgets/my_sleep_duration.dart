@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:health_hack/utils/constants.dart';
 
 class MySleepDuration extends StatelessWidget {
-  const MySleepDuration({Key? key}) : super(key: key);
-
+  const MySleepDuration({Key? key, required this.amount}) : super(key: key);
+  final int amount;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,16 +33,16 @@ class MySleepDuration extends StatelessWidget {
               height: 48,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(right: 16),
+           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    'Average Sleep Duration',
+                    'Daily Sleep Duration',
                     style: TextStyle(
                       fontFamily: 'Lato',
                       fontSize: 18,
@@ -51,8 +51,8 @@ class MySleepDuration extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '~6.5 hour(s)',
-                  style: TextStyle(
+                  '~$amount hour(s)',
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

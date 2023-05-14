@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:health_hack/controllers/main_controller.dart';
+import 'package:health_hack/models/workout_model.dart';
 import 'package:health_hack/utils/constants.dart';
 
 class MyWorkouts extends GetView<MainController> {
-  const MyWorkouts({Key? key}) : super(key: key);
+  const MyWorkouts({
+    Key? key,
+    required this.id,
+    required this.name,
+    required this.coverImage,
+    required this.otherWorkouts,
+  }) : super(key: key);
+  final String id;
+  final String name;
+  final String coverImage;
+  final List<WorkoutModel> otherWorkouts;
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +25,9 @@ class MyWorkouts extends GetView<MainController> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'My Workout',
-            style: TextStyle(
+          Text(
+            name.isNotEmpty ? 'My Workout' : 'Popular Workouts',
+            style: const TextStyle(
               fontFamily: 'Lato',
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -27,7 +38,7 @@ class MyWorkouts extends GetView<MainController> {
             height: 180,
             child: ListView.builder(
               physics: const ClampingScrollPhysics(),
-              itemCount: 1, //controller.personalizedWorkouts().length,
+              itemCount: name.isNotEmpty ? 1 : otherWorkouts.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (_, i) {
                 return Stack(
@@ -53,7 +64,7 @@ class MyWorkouts extends GetView<MainController> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: AssetImage(
-                            'assets/ic_${controller.personalizedWorkouts()[i].coverImage}.jpg',
+                            'assets/ic_${name.isNotEmpty ? coverImage : otherWorkouts[i].coverImage}.jpg',
                           ),
                         ),
                       ),
@@ -61,7 +72,7 @@ class MyWorkouts extends GetView<MainController> {
                     Padding(
                       padding: EdgeInsets.only(top: 16, left: i != 0 ? 32 : 16),
                       child: Text(
-                        controller.personalizedWorkouts()[i].name,
+                        name.isNotEmpty ? name : otherWorkouts[i].name,
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 24,
@@ -70,35 +81,36 @@ class MyWorkouts extends GetView<MainController> {
                         ),
                       ),
                     ),
-                    Positioned.fill(
-                      left: Get.width - 176,
-                      bottom: 16,
-                      child: const Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Text(
-                                'Continue',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Constants.primary,
+                    if (name.isNotEmpty)
+                      Positioned.fill(
+                        left: Get.width - 176,
+                        bottom: 16,
+                        child: const Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: Text(
+                                  'Continue',
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Constants.primary,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Constants.primary,
-                              size: 36,
-                            ),
-                          ],
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Constants.primary,
+                                size: 36,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 );
               },
