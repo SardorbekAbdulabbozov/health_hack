@@ -1,9 +1,10 @@
+// ignore_for_file: unused_field
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:date_field/date_field.dart';
 
 enum AuthMode { signup, login }
 
@@ -31,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen>
 
   AuthMode authMode = AuthMode.signup;
   RegExp regex =
-      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#&*~]).{8,}$');
 
   final TextEditingController _pass = TextEditingController();
 
@@ -136,7 +137,6 @@ class _AuthScreenState extends State<AuthScreen>
     FocusScope.of(context).unfocus();
     if (isValid == true) {
       _formKey.currentState?.save();
-
     }
   }
 
@@ -149,7 +149,7 @@ class _AuthScreenState extends State<AuthScreen>
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-              "assets/background.jpg",
+              "assets/ic_background.jpg",
             ),
             fit: BoxFit.cover,
           ),
@@ -163,14 +163,15 @@ class _AuthScreenState extends State<AuthScreen>
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
-                height: authMode == AuthMode.signup ? 420 : 240,
+                height: authMode == AuthMode.signup ? 480 : 240,
                 // height: _heightAnimation.value.height,
                 constraints: BoxConstraints(
-                    minHeight: authMode == AuthMode.signup ? 420 : 240),
+                    minHeight: authMode == AuthMode.signup ? 480 : 240),
                 width: deviceSize.width * 0.75,
                 child: Form(
                   key: _formKey,
                   child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
                     child: Column(
                       children: [
                         emailAddress(),
@@ -195,6 +196,28 @@ class _AuthScreenState extends State<AuthScreen>
                                     },
                                   ),
                                   password(),
+                                  TextFormField(
+                                    controller: _pass,
+                                    validator: (val) {
+                                      if (val!.isEmpty) {
+                                        return 'Please enter password';
+                                      }
+                                      if (val.length < 6) {
+                                        return 'Password should be at least 8 characters long';
+                                      }
+                                      if (!regex.hasMatch(val)) {
+                                        return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
+                                      }
+                                      return null;
+                                    },
+                                    obscuringCharacter: '*',
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                        label: Text('Password')),
+                                    onSaved: (val) {
+                                      _userPassword = val;
+                                    },
+                                  ),
                                   TextFormField(
                                     validator: (val) {
                                       if (val!.isEmpty) {
