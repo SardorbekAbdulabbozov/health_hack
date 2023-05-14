@@ -1,6 +1,7 @@
+// ignore_for_file: unused_field
+
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:health_hack/utils/constants.dart';
 import 'package:intl/intl.dart';
 
 enum AuthMode { signup, login }
@@ -25,7 +26,7 @@ class _AuthScreenState extends State<AuthScreen>
 
   AuthMode authMode = AuthMode.signup;
   RegExp regex =
-      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#&*~]).{8,}$');
 
   final TextEditingController _pass = TextEditingController();
 
