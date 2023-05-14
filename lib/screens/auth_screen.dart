@@ -105,7 +105,7 @@ class _AuthScreenState extends State<AuthScreen>
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
-                height: authMode == AuthMode.signup ? 420 : 240,
+                height: authMode == AuthMode.signup ? 480 : 240,
                 // height: _heightAnimation.value.height,
                 constraints: BoxConstraints(
                     minHeight: authMode == AuthMode.signup ? 420 : 240),
@@ -113,6 +113,7 @@ class _AuthScreenState extends State<AuthScreen>
                 child: Form(
                   key: _formKey,
                   child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
                     child: Column(
                       children: [
                         if (authMode == AuthMode.signup)
