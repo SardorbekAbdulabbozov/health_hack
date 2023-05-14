@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
+import 'dart:math';
+
 import 'package:health_hack/models/equipment_model.dart';
+import 'package:health_hack/models/injury_model.dart';
 import 'package:health_hack/models/user_model.dart';
 import 'package:health_hack/models/workout_model.dart';
 import 'package:health_hack/storage/local_source.dart';
@@ -8,6 +11,7 @@ import 'package:health_hack/utils/base_functions.dart';
 import 'package:health_hack/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mysql_client/mysql_client.dart';
 
 class MainController extends GetxController {
@@ -17,10 +21,12 @@ class MainController extends GetxController {
   List<WorkoutModel> otherWorkouts = [];
   List<String> exercises = [];
   List<EquipmentModel> equipments = [];
+  List<InjuryModel> injuries = [];
   int navBarIndex = 0;
   int dailyWaterAmount = 0;
   int dailySleepAmount = 0;
   LocalSource localSource = LocalSource();
+  TextEditingController injuryController = TextEditingController();
 
   @override
   void onReady() async {
@@ -62,6 +68,57 @@ class MainController extends GetxController {
       age: int.tryParse(result?.rows.first.colAt(5) ?? ''),
     );
     update();
+  }
+
+  Future<void> getOtherWorkouts() async {
+    otherWorkouts = [];
+    IResultSet? result = await connectionPool?.execute("SELECT * FROM workout");
+    (result?.rows ?? []).forEach((row) {
+      otherWorkouts.add(
+        WorkoutModel(
+          id: row.colAt(0) ?? '',
+          name: row.colAt(1) ?? '',
+          coverImage: BaseFunctions.getWorkoutCoverImage(row.colAt(0) ?? ''),
+        ),
+      );
+    });
+    update();
+  }
+
+  Future<void> getInjuries() async {
+    injuries = [];
+    IResultSet? result = await connectionPool?.execute(
+        "SELECT  id, name, date FROM injury WHERE ssn ='${localSource.getSSN()}'");
+    (result?.rows ?? []).forEach((row) {
+      injuries.add(
+        InjuryModel(
+          id: row.colAt(0) ?? '',
+          name: row.colAt(1) ?? '',
+          date: DateFormat.yMd().format(
+            DateTime.tryParse(row.colAt(2) ?? '') ?? DateTime.now(),
+          ),
+        ),
+      );
+    });
+    update();
+  }
+
+  Future<void> addInjury() async {
+    await connectionPool
+        ?.execute(
+            "INSERT INTO injury (ssn, id, name, date) VALUES ('${localSource.getSSN()}','${localSource.getSSN()}${Random().nextInt(100)}','${injuryController.text}','${DateTime.now()}')")
+        .then((value) async {
+      await getInjuries();
+    });
+  }
+
+  Future<void> removeInjury(String id) async {
+    await connectionPool
+        ?.execute(
+            "DELETE FROM injury WHERE id ='$id' AND ssn ='${localSource.getSSN()}'")
+        .then((value) async {
+      await getInjuries();
+    });
   }
 
   Future<void> getUserWorkout(String ssn) async {
@@ -126,8 +183,12 @@ class MainController extends GetxController {
     update();
   }
 
-  void changeNavBar(int index) {
+  void changeNavBar(int index) async {
     navBarIndex = index;
+    if (index == 1) {
+      await getOtherWorkouts();
+      await getInjuries();
+    }
     update();
   }
 
@@ -173,6 +234,19 @@ class MainController extends GetxController {
     }
     await getEquipments(workoutId);
     update();
+  }
+
+  Future<void> registerWorkout(String workoutId) async {
+    var ssn = localSource.getSSN();
+    await connectionPool
+        ?.execute("UPDATE user SET id='$workoutId' WHERE ssn = '$ssn'")
+        .then((value) async {
+      await getUserData(ssn).then((v) async {
+        await getUserWorkout(ssn);
+        await getDailyWaterConsumption(ssn);
+        await getSleepDuration(ssn);
+      });
+    });
   }
 
   Future<void> getEquipments(String workoutId) async {

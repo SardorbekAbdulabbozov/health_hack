@@ -43,6 +43,7 @@ class MainAppBar extends StatelessWidget {
 BottomNavigationBarItem navBarItem(
     {required String label, required String icon}) {
   return BottomNavigationBarItem(
+    backgroundColor: Colors.transparent,
     icon: SvgPicture.asset(
       icon,
       color: Colors.white,

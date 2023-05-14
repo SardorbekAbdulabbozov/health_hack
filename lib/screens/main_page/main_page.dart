@@ -2,6 +2,7 @@ import 'package:health_hack/controllers/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:health_hack/screens/explore_page/explore_page.dart';
+import 'package:health_hack/screens/info_page/info_page.dart';
 import 'package:health_hack/screens/main_page/widgets/custom_search_bar.dart';
 import 'package:health_hack/screens/main_page/widgets/main_app_bar.dart';
 import 'package:health_hack/screens/main_page/widgets/my_water_consumption.dart';
@@ -39,7 +40,7 @@ class MainPage extends StatelessWidget {
             ],
           ),
           const ExplorePage(),
-          Container(),
+          const InfoPage(),
           const ProfilePage(),
         ];
         return Scaffold(
@@ -59,24 +60,30 @@ class MainPage extends StatelessWidget {
           body: pages[controller.navBarIndex],
           bottomNavigationBar: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 8),
+                const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(32)),
-              child: BottomNavigationBar(
-                backgroundColor: Constants.assets,
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: Constants.primary,
-                currentIndex: controller.navBarIndex,
-                showUnselectedLabels: false,
-                onTap: (i) {
-                  controller.changeNavBar(i);
-                },
-                items: [
-                  navBarItem(label: 'Home', icon: 'assets/ic_home.svg'),
-                  navBarItem(label: 'Explore', icon: 'assets/ic_rocket.svg'),
-                  navBarItem(label: 'Records', icon: 'assets/ic_statistic.svg'),
-                  navBarItem(label: 'Profile', icon: 'assets/ic_profile.svg'),
-                ],
+              child: Theme(
+                data: Theme.of(context)
+                    .copyWith(canvasColor: Colors.transparent),
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  // backgroundColor: Color(0x00ffffff),
+                  backgroundColor: Constants.assets,
+                  type: BottomNavigationBarType.fixed,
+                  selectedItemColor: Constants.primary,
+                  currentIndex: controller.navBarIndex,
+                  showUnselectedLabels: false,
+                  onTap: (i) {
+                    controller.changeNavBar(i);
+                  },
+                  items: [
+                    navBarItem(label: 'Home', icon: 'assets/ic_home.svg'),
+                    navBarItem(label: 'Explore', icon: 'assets/ic_rocket.svg'),
+                    navBarItem(label: 'Info', icon: 'assets/ic_statistic.svg'),
+                    navBarItem(label: 'Profile', icon: 'assets/ic_profile.svg'),
+                  ],
+                ),
               ),
             ),
           ),
