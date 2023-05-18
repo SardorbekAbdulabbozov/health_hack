@@ -31,6 +31,7 @@ class MainController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    debugPrint('├─────────────────────────── not connected');
     connectionPool = await MySQLConnection.createConnection(
       host: Constants.host,
       port: 3306,
@@ -39,6 +40,7 @@ class MainController extends GetxController {
       databaseName: Constants.databaseName,
       secure: false,
     );
+    debugPrint('├─────────────────────────── not connected: $connectionPool');
     await connectionPool
         ?.connect()
         .then((value) => debugPrint('├─────────────────────────── connected'));

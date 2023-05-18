@@ -8,9 +8,10 @@ class Constants{
   static const profileR="/profile";
 
   // MySQL constants
-  static const username = 'root';
+  static const username = 'Sardorbek-s-A10.home';
   static const password = 'root123';
-  static const host = '10.0.2.2';
+  static const host = '192.168.1.83'; // for real device
+  //'10.0.2.2'; for emulator
   static const databaseName = 'health_hack_real';
 
   // Colors

@@ -34,8 +34,8 @@ class _AuthPageState extends State<AuthPage>
   DateTime? selectedDate;
 
   AuthMode authMode = AuthMode.signup;
-  RegExp regex =
-      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#&*~]).{8,}$');
+  /*RegExp regex =
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#&*~]).{8,}$');*/
 
   final TextEditingController _password = TextEditingController();
 
@@ -44,7 +44,7 @@ class _AuthPageState extends State<AuthPage>
   Widget password() {
     return TextFormField(
       controller: _password,
-      validator: (val) {
+      /*validator: (val) {
         if (val!.isEmpty) {
           return 'Please enter password';
         }
@@ -55,7 +55,7 @@ class _AuthPageState extends State<AuthPage>
           return 'Enter a valid password: The password should contain digits, symbols, capital letter, and lower case letter';
         }
         return null;
-      },
+      },*/
       obscuringCharacter: '*',
       obscureText: true,
       cursorColor: Constants.assets,
@@ -263,7 +263,7 @@ class _AuthPageState extends State<AuthPage>
                               ),
                               password(),
                               TextFormField(
-                                validator: (val) {
+                                /*validator: (val) {
                                   if (val!.isEmpty) {
                                     return 'Please enter password';
                                   }
@@ -280,7 +280,7 @@ class _AuthPageState extends State<AuthPage>
                                   }
 
                                   return null;
-                                },
+                                },*/
                                 obscuringCharacter: '*',
                                 obscureText: true,
                                 cursorColor: Constants.assets,
